@@ -1,4 +1,5 @@
 import { fetchPlaceholders,getMetadata } from '../../scripts/aem.js';
+
 const placeholders = await fetchPlaceholders(getMetadata("locale"));
 
 const { btnNxt,btnPre} = placeholders;
