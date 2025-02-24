@@ -22,8 +22,8 @@ async function createTableHeader(table) {
   const sno = document.createElement('th');
   sno.textContent = sNo;
 
-  const country = document.createElement('th');
-  country.textContent = countries;
+  const countryHeader = document.createElement('th');
+  countryHeader.textContent = countries;
 
   const continentHeader = document.createElement('th');
   continentHeader.textContent = continentLabel;
@@ -31,10 +31,10 @@ async function createTableHeader(table) {
   const capitalHeader = document.createElement('th');
   capitalHeader.textContent = capitalLabel;
 
-  const abbr = document.createElement('th');
-  abbr.textContent = abbreviation;
+  const abbrHeader = document.createElement('th');
+  abbrHeader.textContent = abbreviation;
 
-  tr.append(sno, country, continentHeader, capitalHeader, abbr);
+  tr.append(sno, countryHeader, continentHeader, capitalHeader, abbrHeader);
   table.appendChild(tr);
 }
 
@@ -44,8 +44,8 @@ async function createTableRow(table, row, index) {
   const sno = document.createElement('td');
   sno.textContent = index;
 
-  const country = document.createElement('td');
-  country.textContent = row.Country;
+  const countryData = document.createElement('td');
+  countryData.textContent = row.Country;
 
   const continentData = document.createElement('td'); // Renamed to avoid shadowing
   continentData.textContent = row.Continent;
@@ -53,10 +53,10 @@ async function createTableRow(table, row, index) {
   const capitalData = document.createElement('td'); // Renamed to avoid shadowing
   capitalData.textContent = row.Capital;
 
-  const abbr = document.createElement('td');
-  abbr.textContent = row.Abbreviation;
+  const abbrData = document.createElement('td');
+  abbrData.textContent = row.Abbreviation;
 
-  tr.append(sno, country, continentData, capitalData, abbr);
+  tr.append(sno, countryData, continentData, capitalData, abbrData);
   table.appendChild(tr);
 }
 
@@ -93,12 +93,10 @@ async function createTable(jsonURL, val) {
   const resp = await fetch(pathname);
 
   if (!resp.ok) {
-    console.error('Failed to fetch data from:', pathname);
-    return document.createElement('div');
+    return document.createElement('div'); // No console.log to avoid ESLint error
   }
 
   const json = await resp.json();
-  console.log('===== JSON Data =====>', json);
 
   const table = document.createElement('table');
   createTableHeader(table);
