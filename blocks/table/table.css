@@ -1,13 +1,16 @@
 .countries table, th {
     border: 1px solid black;
-    background-color:cornflowerblue;
-}
-.countries table, td {
-    border: 1px solid black;
-    background-color:aliceblue;
+    background-color: cornflowerblue;
 }
 
-.countries .region-select>select{
+/* Added a blank line before this rule */
+.countries table, td {
+    border: 1px solid black;
+    background-color: aliceblue;
+}
+
+/* Added a blank line before this rule */
+.countries .region-select > select {
     width: 40%;
     font-size: large;
 }
