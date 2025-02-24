@@ -1,98 +1,140 @@
-import { fetchPlaceholders,getMetadata } from '../../scripts/aem.js';
+import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 
 const placeholders = await fetchPlaceholders(getMetadata("locale"));
 
-const { allCountries,abbreviation,africa,america,asia,australia,capital,continent,countries,europe,sNo} = placeholders;
+const {
+  allCountries,
+  abbreviation,
+  africa,
+  america,
+  asia,
+  australia,
+  capital,
+  continent,
+  countries,
+  europe,
+  sNo
+} = placeholders;
 
+async function createTableHeader(table) {
+  let tr = document.createElement("tr");
 
-async function createTableHeader(table){
-    let tr=document.createElement("tr");
-    let sno=document.createElement("th");sno.appendChild(document.createTextNode(sNo));
-    let conuntry=document.createElement("th");conuntry.appendChild(document.createTextNode(countries));
-    let continenth=document.createElement("th");continenth.appendChild(document.createTextNode(continent));
-    let capitalh=document.createElement("th");capitalh.appendChild(document.createTextNode(capital));
-    let abbr=document.createElement("th");abbr.appendChild(document.createTextNode(abbreviation));
-    tr.append(sno);tr.append(conuntry);tr.append(capitalh);tr.append(continenth);tr.append(abbr);
-    table.append(tr);
+  let sno = document.createElement("th");
+  sno.textContent = sNo;
+
+  let country = document.createElement("th");
+  country.textContent = countries;
+
+  let continentHeader = document.createElement("th");
+  continentHeader.textContent = continent;
+
+  let capitalHeader = document.createElement("th");
+  capitalHeader.textContent = capital;
+
+  let abbr = document.createElement("th");
+  abbr.textContent = abbreviation;
+
+  tr.append(sno, country, continentHeader, capitalHeader, abbr);
+  table.appendChild(tr);
 }
-async function createTableRow(table,row,i){
-    let tr=document.createElement("tr");
-    let sno=document.createElement("td");sno.appendChild(document.createTextNode(i));
-    let conuntry=document.createElement("td");conuntry.appendChild(document.createTextNode(row.Country));
-    let continent=document.createElement("td");continent.appendChild(document.createTextNode(row.Capital));
-    let capital=document.createElement("td");capital.appendChild(document.createTextNode(row.Continent));
-    let abbr=document.createElement("td");abbr.appendChild(document.createTextNode(row.Abbreviation));
-    tr.append(sno);tr.append(conuntry);tr.append(continent);tr.append(capital);tr.append(abbr);
-    table.append(tr);
+
+async function createTableRow(table, row, index) {
+  let tr = document.createElement("tr");
+
+  let sno = document.createElement("td");
+  sno.textContent = index;
+
+  let country = document.createElement("td");
+  country.textContent = row.Country;
+
+  let continent = document.createElement("td");
+  continent.textContent = row.Continent;
+
+  let capital = document.createElement("td");
+  capital.textContent = row.Capital;
+
+  let abbr = document.createElement("td");
+  abbr.textContent = row.Abbreviation;
+
+  tr.append(sno, country, continent, capital, abbr);
+  table.appendChild(tr);
 }
 
-async function createSelectMap(jsonURL){
-    const optionsMap=new Map();
-    const { pathname } = new URL(jsonURL);
+async function createSelectMap(jsonURL) {
+  const optionsMap = new Map([
+    ["all", allCountries],
+    ["asia", asia],
+    ["europe", europe],
+    ["africa", africa],
+    ["america", america],
+    ["australia", australia],
+  ]);
 
-    const resp = await fetch(pathname);
-    optionsMap.set("all",allCountries);optionsMap.set("asia",asia);optionsMap.set("europe",europe);optionsMap.set("africa",africa);optionsMap.set("america",america);optionsMap.set("australia",australia);
-    const select=document.createElement('select');
-    select.id = "region";
-    select.name="region";
-    optionsMap.forEach((val,key) => {
-        const option = document.createElement('option');
-        option.textContent = val;
-        option.value = key;
-        select.append(option);
-      });
-     
-     const div=document.createElement('div'); 
-     div.classList.add("region-select");
-     div.append(select);
-    return div;
+  const select = document.createElement("select");
+  select.id = "region";
+  select.name = "region";
+
+  optionsMap.forEach((val, key) => {
+    const option = document.createElement("option");
+    option.textContent = val;
+    option.value = key;
+    select.appendChild(option);
+  });
+
+  const div = document.createElement("div");
+  div.classList.add("region-select");
+  div.appendChild(select);
+
+  return div;
 }
-async function createTable(jsonURL,val) {
 
-    let  pathname = null;
-    if(val){
-        pathname=jsonURL;
-    }else{
-        pathname= new URL(jsonURL);
-    }
-    
-    const resp = await fetch(pathname);
-    const json = await resp.json();
-    console.log("=====JSON=====> {} ",json);
-    
-    const table = document.createElement('table');
-    createTableHeader(table);
-    json.data.forEach((row,i) => {
+async function createTable(jsonURL, val) {
+  const pathname = val ? jsonURL : new URL(jsonURL);
+  const resp = await fetch(pathname);
+  
+  if (!resp.ok) {
+    console.error("Failed to fetch data from:", pathname);
+    return document.createElement("div");
+  }
 
-        createTableRow(table,row,(i+1));
+  const json = await resp.json();
+  console.log("===== JSON Data =====>", json);
 
-      
+  const table = document.createElement("table");
+  createTableHeader(table);
+
+  if (json.data && Array.isArray(json.data)) {
+    json.data.forEach((row, i) => {
+      createTableRow(table, row, i + 1);
     });
-    
-    return table;
-}    
+  }
+
+  return table;
+}
 
 export default async function decorate(block) {
-    const countries = block.querySelector('a[href$=".json"]');
-    const parientDiv=document.createElement('div');
-    parientDiv.classList.add('contries-block');
+  const countriesLink = block.querySelector('a[href$=".json"]');
+  
+  if (!countriesLink) return;
 
-    if (countries) {
-        parientDiv.append(await createSelectMap(countries.href));
-        parientDiv.append(await createTable(countries.href,null));
-        countries.replaceWith(parientDiv);
-        
+  const parentDiv = document.createElement("div");
+  parentDiv.classList.add("countries-block");
+
+  const regionDropdown = await createSelectMap(countriesLink.href);
+  const table = await createTable(countriesLink.href, null);
+
+  parentDiv.append(regionDropdown, table);
+  countriesLink.replaceWith(parentDiv);
+
+  const dropdown = document.getElementById("region");
+  dropdown.addEventListener("change", async () => {
+    let url = countriesLink.href;
+    if (dropdown.value !== "all") {
+      url = `${countriesLink.href}?sheet=${dropdown.value}`;
     }
-    const dropdown=document.getElementById('region');
-      dropdown.addEventListener('change', () => {
-        let url=countries.href;
-        if(dropdown.value!='all'){
-            url=countries.href+"?sheet="+dropdown.value;
-        }
-        const tableE=parientDiv.querySelector(":scope > table");
-        let promise = Promise.resolve(createTable(url,dropdown.value));
-        promise.then(function (val) {
-            tableE.replaceWith(val);
-        });
-      });
-  }
+
+    const newTable = await createTable(url, dropdown.value);
+    const oldTable = parentDiv.querySelector("table");
+    oldTable.replaceWith(newTable);
+  });
+}
