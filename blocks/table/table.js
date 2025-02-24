@@ -9,8 +9,8 @@ const {
   america,
   asia,
   australia,
-  capital,
-  continent,
+  capital: capitalLabel,
+  continent: continentLabel,
   countries,
   europe,
   sNo,
@@ -26,10 +26,10 @@ async function createTableHeader(table) {
   country.textContent = countries;
 
   const continentHeader = document.createElement('th');
-  continentHeader.textContent = continent;
+  continentHeader.textContent = continentLabel;
 
   const capitalHeader = document.createElement('th');
-  capitalHeader.textContent = capital;
+  capitalHeader.textContent = capitalLabel;
 
   const abbr = document.createElement('th');
   abbr.textContent = abbreviation;
@@ -47,20 +47,20 @@ async function createTableRow(table, row, index) {
   const country = document.createElement('td');
   country.textContent = row.Country;
 
-  const continent = document.createElement('td');
-  continent.textContent = row.Continent;
+  const continentData = document.createElement('td'); // Renamed to avoid shadowing
+  continentData.textContent = row.Continent;
 
-  const capital = document.createElement('td');
-  capital.textContent = row.Capital;
+  const capitalData = document.createElement('td'); // Renamed to avoid shadowing
+  capitalData.textContent = row.Capital;
 
   const abbr = document.createElement('td');
   abbr.textContent = row.Abbreviation;
 
-  tr.append(sno, country, continent, capital, abbr);
+  tr.append(sno, country, continentData, capitalData, abbr);
   table.appendChild(tr);
 }
 
-async function createSelectMap(jsonURL) {
+async function createSelectMap() {
   const optionsMap = new Map([
     ['all', allCountries],
     ['asia', asia],
@@ -122,7 +122,7 @@ export default async function decorate(block) {
   const parentDiv = document.createElement('div');
   parentDiv.classList.add('countries-block');
 
-  const regionDropdown = await createSelectMap(countriesLink.href);
+  const regionDropdown = await createSelectMap();
   const table = await createTable(countriesLink.href, null);
 
   parentDiv.append(regionDropdown, table);
