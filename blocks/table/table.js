@@ -1,4 +1,6 @@
+
 import { fetchPlaceholders,getMetadata } from '../../scripts/aem.js';
+
 const placeholders = await fetchPlaceholders(getMetadata("locale"));
 
 const { allCountries,abbreviation,africa,america,asia,australia,capital,continent,countries,europe,sNo} = placeholders;
