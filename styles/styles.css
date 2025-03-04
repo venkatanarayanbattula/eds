@@ -181,7 +181,7 @@ button {
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
-  background-color: #f8f8f8;
+  background-color: var(--link-color);
   color: var(--background-color);
   cursor: pointer;
   overflow: hidden;
@@ -207,7 +207,7 @@ a.button.secondary,
 button.secondary {
   background-color: unset;
   border: 2px solid currentcolor;
-  color: black;
+  color: var(--text-color);
 }
 
 main img {
