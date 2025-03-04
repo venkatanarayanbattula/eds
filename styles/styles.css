@@ -12,8 +12,8 @@
 
 :root {
   /* colors */
-  --background-color: #94d6d7;
-  --light-color:#94d6d7;
+  --background-color: white;
+  --light-color: #f8f8f8;
   --dark-color: #505050;
   --text-color: #131313;
   --link-color: #3b63fb;
@@ -74,7 +74,7 @@ body {
   display: none;
   margin: 0;
   background-color: var(--background-color);
-  color: black;
+  color: blue;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
