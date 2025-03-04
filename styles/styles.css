@@ -74,7 +74,7 @@ body {
   display: none;
   margin: 0;
   background-color: var(--background-color);
-  color: blue;
+  color: black;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
