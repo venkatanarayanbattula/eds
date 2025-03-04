@@ -2,7 +2,8 @@ import { fetchPlaceholders,getMetadata } from '../../scripts/aem.js';
 
 const placeholders = await fetchPlaceholders(getMetadata("locale"));
 
-const { btnNxt,btnPre} = placeholders;
+const btnNxt = placeholders?.btnNxt || "Next"; 
+const btnPre = placeholders?.btnPre || "Previous";
 export default function decorate(block) {
 
   console.log("placeholders ---> ",placeholders,btnNxt,btnPre);
