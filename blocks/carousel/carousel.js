@@ -38,9 +38,9 @@ export default function decorate(block) {
 
   const nextSlide = document.querySelector('.btn-next');
   let curSlide = 0;
-  let maxSlide = slides.length - 1;
+  const maxSlide = slides.length - 1;
 
-  nextSlide.addEventListener('click', function () {
+  nextSlide.addEventListener('click', () => {
     curSlide = curSlide === maxSlide ? 0 : curSlide + 1;
     slides.forEach((slide, indx) => {
       slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`;
@@ -48,7 +48,7 @@ export default function decorate(block) {
   });
 
   const prevSlide = document.querySelector('.btn-prev');
-  prevSlide.addEventListener('click', function () {
+  prevSlide.addEventListener('click', () => {
     curSlide = curSlide === 0 ? maxSlide : curSlide - 1;
     slides.forEach((slide, indx) => {
       slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`;
